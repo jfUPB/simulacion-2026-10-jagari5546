@@ -86,9 +86,317 @@ function draw() {
 
 <img width="1783" height="803" alt="image" src="https://github.com/user-attachments/assets/d3cbd1ad-b89c-4af1-9d31-7c5b29470ad3" />
 - PD: Donde solicita el link no lo pongo porque no se como guardar el sketch
+### Actividad 5
+- Aca el concepto de levy fligh quedo claro mas no como aplicarlo de forma correcta.
+- El codigo seria el siguiente
+- // The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+let walker;
+
+function setup() {
+  createCanvas(640, 240);
+  walker = new Walker();
+  background(255);
+}
+
+function draw() {
+  walker.step();
+  walker.show();
+}
+
+class Walker {
+  constructor() {
+    this.x = width / 2;
+    this.y = height / 2;
+
+    this.minStep = 1;
+    this.beta = 1.6;
+    this.bigJumpProb = 0.02;
+  }
+
+  show() {
+    stroke(0);
+    point(this.x, this.y);
+  }
+  levyStepLength() {
+    const u = max(1e-9, random());
+    return this.minStep * pow(u, -1 / (this.beta - 1));
+  }
+
+  step() {
+    const angle = random(TWO_PI);
+    let stepLen = 1;
+    if (random() < this.bigJumpProb) {
+      stepLen = this.levyStepLength();
+      stepLen = constrain(stepLen, 1, 200);
+    }
+
+    this.x += cos(angle) * stepLen;
+    this.y += sin(angle) * stepLen;
+
+    if (this.x < 0) this.x += width;
+    if (this.x > width) this.x -= width;
+    if (this.y < 0) this.y += height;
+    if (this.y > height) this.y -= height;
+  }
+}
+
+<img width="815" height="548" alt="image" src="https://github.com/user-attachments/assets/ea70b2e7-0b2a-418f-9fa5-2c1c3da83db4" />
+
 ## Bitácora de aplicación 
+- Usare El concepto de Levy Flight, Caminatas Aleatorias y Ruido Perlin.
+- // Lévy + Perlin-Heading + Brushes + Interactivity + Multi-walkers (p5.js)
+
+let walkers = [];
+let palettesHex;
+let palettes; // paletas ya convertidas a p5.Color
+let paletteIndex = 0;
+
+let mode = 0;            // 0: ink line, 1: dots, 2: ribbon
+let fadeOn = true;       // fade suave
+let paused = false;      // tecla P
+let stepsPerFrame = 6;   // velocidad de dibujo
+let walkerCount = 6;     // QUITÉ 2: ahora 4 walkers
+
+function setup() {
+  createCanvas(1000, 1000);
+  pixelDensity(1);
+
+  // Paletas en hex (como las tenías)
+  palettesHex = [
+    ["#0B0F1A", "#1B263B", "#415A77", "#778DA9", "#E0E1DD"],
+    ["#0D1B2A", "#1B263B", "#E63946", "#F1FAEE", "#A8DADC"],
+    ["#0F0F0F", "#2A2A2A", "#F2E9E4", "#C9ADA7", "#9A8C98"],
+    ["#0B1320", "#1C2541", "#3A506B", "#5BC0BE", "#FDE74C"]
+  ];
+
+  // Convertimos a p5.Color para que V funcione siempre “bien”
+  palettes = palettesHex.map(pal => pal.map(h => color(h)));
+
+  resetWalkers();
+  background(255);
+}
+
+function draw() {
+  if (paused) {
+    // (opcional) HUD para saber que está pausado
+    noStroke();
+    fill(0, 90);
+    textSize(12);
+    text("PAUSED (P)", 10, 18);
+    return;
+  }
+
+  // Fade más suave para que no “se pinte el fondo” con el tiempo
+  if (fadeOn) {
+    noStroke();
+    fill(255, 5); // antes 12 (era muy agresivo); 3-8 suele ser sweet spot
+    rect(0, 0, width, height);
+  }
+
+  for (let s = 0; s < stepsPerFrame; s++) {
+    for (const w of walkers) {
+      w.step();
+      w.show();
+    }
+  }
+
+  // HUD mínimo
+  noStroke();
+  fill(0, 60);
+  textSize(11);
+  text(`walkers:${walkerCount}  mode:${mode}  fade:${fadeOn ? "ON" : "OFF"}  palette:${paletteIndex}`, 10, height - 10);
+}
+
+function resetWalkers() {
+  walkers = [];
+  for (let i = 0; i < walkerCount; i++) {
+    walkers.push(new Walker(i));
+  }
+}
+
+function keyPressed() {
+  // Pausa
+  if (key === 'p' || key === 'P') {
+    paused = !paused;
+    return;
+  }
+
+  // Fade ON/OFF o limpiar
+  if (key === ' ') {
+    if (keyIsDown(SHIFT)) {
+      background(255);
+    } else {
+      fadeOn = !fadeOn;
+    }
+  }
+
+  // Cambiar paleta (arreglado)
+  if (key === 'v' || key === 'V') {
+    paletteIndex = (paletteIndex + 1) % palettes.length;
+
+    // Cambiar también comportamiento (como antes, pero ya estable)
+    const vibe = paletteIndex;
+
+    for (const w of walkers) {
+      if (vibe === 0) {
+        w.beta = 1.8;
+        w.baseJumpProb = 0.015;
+        w.baseTurnSpeed = 0.010;
+        w.angleSpan = TWO_PI * 1.6;
+        w.maxJump = 180;
+      } else if (vibe === 1) {
+        w.beta = 1.45;
+        w.baseJumpProb = 0.035;
+        w.baseTurnSpeed = 0.013;
+        w.angleSpan = TWO_PI * 2.4;
+        w.maxJump = 260;
+      } else if (vibe === 2) {
+        w.beta = 2.2;
+        w.baseJumpProb = 0.010;
+        w.baseTurnSpeed = 0.007;
+        w.angleSpan = TWO_PI * 1.2;
+        w.maxJump = 140;
+      } else if (vibe === 3) {
+        w.beta = 1.6;
+        w.baseJumpProb = 0.020;
+        w.baseTurnSpeed = 0.016;
+        w.angleSpan = TWO_PI * 3.0;
+        w.maxJump = 240;
+      }
+    }
+  }
+
+  // Cambiar modo de pincel
+  if (key === 'm' || key === 'M') {
+    mode = (mode + 1) % 3;
+  }
+
+  // Reset walkers
+  if (key === 'r' || key === 'R') {
+    resetWalkers();
+  }
+
+  // Ajuste rápido de velocidad
+  if (key === '+') stepsPerFrame = min(30, stepsPerFrame + 1);
+  if (key === '-') stepsPerFrame = max(1, stepsPerFrame - 1);
+}
+
+class Walker {
+  constructor(id) {
+    this.id = id;
+
+    this.x = width / 2 + random(-30, 30);
+    this.y = height / 2 + random(-30, 30);
+    this.px = this.x;
+    this.py = this.y;
+
+    // Lévy
+    this.minStep = 1;
+    this.beta = 1.6;
+    this.maxJump = 220;
+
+    this.baseJumpProb = 0.02;
+    this.baseTurnSpeed = 0.01;
+
+    // Perlin
+    this.t = random(1000) + id * 100;
+    this.angleSpan = TWO_PI * 2;
+
+    // Orgánico
+    this.jitter = 0.12;
+    this.brushBias = random(0.8, 1.25);
+  }
+
+  levyStepLength() {
+    const u = max(1e-9, random());
+    return this.minStep * pow(u, -1 / (this.beta - 1));
+  }
+
+  step() {
+    this.px = this.x;
+    this.py = this.y;
+
+    // Mouse controla el sistema
+    const mx = constrain(mouseX / width, 0, 1);
+    const my = constrain(mouseY / height, 0, 1);
+
+    const turnSpeed = this.baseTurnSpeed * lerp(0.5, 2.5, mx);
+    const angleSpan = this.angleSpan * lerp(0.8, 1.4, mx);
+    const jumpProb  = this.baseJumpProb * lerp(0.5, 3.0, 1 - my);
+
+    const n = noise(this.t);
+    let angle = n * angleSpan;
+    angle += random(-this.jitter, this.jitter);
+
+    let stepLen = 1;
+    const jumped = (random() < jumpProb);
+    if (jumped) {
+      stepLen = this.levyStepLength();
+      stepLen = constrain(stepLen, 1, this.maxJump);
+    }
+
+    this.x += cos(angle) * stepLen;
+    this.y += sin(angle) * stepLen;
+
+    if (this.x < 0) { this.x += width; this.px += width; }
+    if (this.x > width) { this.x -= width; this.px -= width; }
+    if (this.y < 0) { this.y += height; this.py += height; }
+    if (this.y > height) { this.y -= height; this.py -= height; }
+
+    this.t += turnSpeed * (jumped ? 2.2 : 1.0);
+  }
+
+  show() {
+    const pal = palettes[paletteIndex];
+
+    const cIndex = floor(map(noise(this.t + 500 + this.id * 10), 0, 1, 0, pal.length));
+    const col = pal[constrain(cIndex, 0, pal.length - 1)];
+
+    const d = dist(this.px, this.py, this.x, this.y);
+    const w = map(noise(this.t + 1000 + this.id * 20), 0, 1, 0.6, 3.2) * this.brushBias;
+
+    if (mode === 0) {
+      strokeWeight(w);
+      stroke(red(col), green(col), blue(col), 95);
+      line(this.px, this.py, this.x, this.y);
+
+    } else if (mode === 1) {
+
+      noStroke();
+      const a = map(noise(this.t + 2000 + this.id * 30), 0, 1, 35, 160);
+      fill(red(col), green(col), blue(col), a);
+
+      const r = map(constrain(d, 0, 140), 0, 140, 1, 9) * this.brushBias;
+      circle(this.x, this.y, r);
+
+    } else if (mode === 2) {
+      // Ribbon
+      const dx = this.x - this.px;
+      const dy = this.y - this.py;
+      const len = max(1e-6, sqrt(dx * dx + dy * dy));
+      const nx = -dy / len;
+      const ny = dx / len;
+
+      const ribbonW = map(noise(this.t + 3000 + this.id * 40), 0, 1, 1, 9) * this.brushBias;
+
+      strokeWeight(1.1);
+      stroke(red(col), green(col), blue(col), 70);
+      line(this.px + nx * ribbonW, this.py + ny * ribbonW, this.x + nx * ribbonW, this.y + ny * ribbonW);
+      line(this.px - nx * ribbonW, this.py - ny * ribbonW, this.x - nx * ribbonW, this.y - ny * ribbonW);
+
+     
+      noStroke();
+      fill(red(col), green(col), blue(col), 14);
+      circle(this.x, this.y, map(noise(this.t + 4000 + this.id * 50), 0, 1, 1, 3));
+    }
+  }
+}
 
 
 
 ## Bitácora de reflexión
+
 
