@@ -439,15 +439,16 @@ levyStepLength() {
  
 ## Bitácora de reflexión
 
-1. La aleatoriedad del random
+1. La aleatoriedad del random es digamos mas brusca que la del ruido perlin, ya que el perlin manda valores aleatorios pero no tan distantes entre si mientras que el random puede mandar un valor cualquiera. El primero lo usaria digamos si necesito valores completamente aleatorios mientras el otro lo usaria si necesitara que haya conexion entre los valores anteriores y el valor proximo, digamos, random() si tiene entre 1 y 100 puede dar cualquiera mientras que (noise()) si le das 1 te va a dar 0 o 2. 
 
 2. Una caminata aleatoria es como su nombre lo dice un walker cuya siguiente direccion se escoje de forma aleatoria, aca cualquier direccion es posible y no hay una tendencia clara hacia ninguna de las direcciones mientras que una distribucion normal tiene una clara tendencia hacia algun lado, viendolo como los ejemplos de la pagina una distribucion normal tendria tendencia a que los numeros sean mas centrales digamos que si tuviera que escoger un numero entre 1 y 50 mayormente escogeria los numeros cerca al 25, de forma grafica se aprecia como una campana de bell o una campana de gauss ya esta tendra forma mas chata o mas "picuda" dependiendo de la desviacion estandar.
 
-3. La aleatoriedad en el arte generativo
+3. La aleatoriedad en el arte generativo permite que haya variacion, osea que no sea un patron repetitivo sino que dentro de los parametros dados se pueda dar cualquier resultado dando asi a lugar a cosas muy inesperadas, a su ves tambien la aleatoriedad controlada permite dar paso a creaciones mas naturales y que se sientan menos roboticas y mas acercadas a lo que seria una obra de arte, digamos si tenemos un walker normal cada paso se siente robotico, como pequeños puntos que estan ahi solo por estar mientras que si le ponemos un ruido perlin cada paso sera cercano al anterior permitiendo que se vea continuidad en el proceso. 
 
 4. Use el random walker mezclado con el levy flight, no quiero hablar de uno solo sino en ambos como conjunto, la direccion la escoge el walker y asi da una sensacion de creacion en tiempo real mientras que los saltos dados por el levy flight permiten que la obra coja mucho mas dinamismo, la combinacion de ambas fue escencial para el buen desarrollo de la obra que a principio parece no tener sentido ni forma pero despues de un rato ya la aleatoriedad va definiendose y un grupo de lineas empiezan a tener forma.
 
 5. Walk es basicamente avanzar en una direccion x,y o solo x o solo y, simulando la idea de caminar, una tipo levy flight tendra lo mismo que una caminata tradicional solo que abra la posibilidad minima de que de un salto grande, asi digamos que 1% de el paso que de sea de 100 veces la distancia del paso normal. 
+
 
 
 
