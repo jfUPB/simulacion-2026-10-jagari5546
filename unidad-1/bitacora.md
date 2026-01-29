@@ -147,32 +147,28 @@ class Walker {
 
 ## Bitácora de aplicación 
 - Usare El concepto de Levy Flight, Caminatas Aleatorias y Ruido Perlin.
-- // Lévy + Perlin-Heading + Brushes + Interactivity + Multi-walkers (p5.js)
+- 
 
 let walkers = [];
 let palettesHex;
-let palettes; // paletas ya convertidas a p5.Color
+let palettes;
 let paletteIndex = 0;
 
-let mode = 0;            // 0: ink line, 1: dots, 2: ribbon
-let fadeOn = true;       // fade suave
-let paused = false;      // tecla P
-let stepsPerFrame = 6;   // velocidad de dibujo
-let walkerCount = 6;     // QUITÉ 2: ahora 4 walkers
+let mode = 0;
+let fadeOn = true;
+let paused = false;
+let stepsPerFrame = 6;
+let walkerCount = 6;
 
 function setup() {
   createCanvas(1000, 1000);
   pixelDensity(1);
-
-  // Paletas en hex (como las tenías)
   palettesHex = [
     ["#0B0F1A", "#1B263B", "#415A77", "#778DA9", "#E0E1DD"],
     ["#0D1B2A", "#1B263B", "#E63946", "#F1FAEE", "#A8DADC"],
     ["#0F0F0F", "#2A2A2A", "#F2E9E4", "#C9ADA7", "#9A8C98"],
     ["#0B1320", "#1C2541", "#3A506B", "#5BC0BE", "#FDE74C"]
   ];
-
-  // Convertimos a p5.Color para que V funcione siempre “bien”
   palettes = palettesHex.map(pal => pal.map(h => color(h)));
 
   resetWalkers();
@@ -181,7 +177,6 @@ function setup() {
 
 function draw() {
   if (paused) {
-    // (opcional) HUD para saber que está pausado
     noStroke();
     fill(0, 90);
     textSize(12);
@@ -189,10 +184,9 @@ function draw() {
     return;
   }
 
-  // Fade más suave para que no “se pinte el fondo” con el tiempo
   if (fadeOn) {
     noStroke();
-    fill(255, 5); // antes 12 (era muy agresivo); 3-8 suele ser sweet spot
+    fill(255, 5);
     rect(0, 0, width, height);
   }
 
@@ -218,13 +212,11 @@ function resetWalkers() {
 }
 
 function keyPressed() {
-  // Pausa
   if (key === 'p' || key === 'P') {
     paused = !paused;
     return;
   }
 
-  // Fade ON/OFF o limpiar
   if (key === ' ') {
     if (keyIsDown(SHIFT)) {
       background(255);
@@ -233,11 +225,9 @@ function keyPressed() {
     }
   }
 
-  // Cambiar paleta (arreglado)
   if (key === 'v' || key === 'V') {
     paletteIndex = (paletteIndex + 1) % palettes.length;
 
-    // Cambiar también comportamiento (como antes, pero ya estable)
     const vibe = paletteIndex;
 
     for (const w of walkers) {
@@ -269,17 +259,14 @@ function keyPressed() {
     }
   }
 
-  // Cambiar modo de pincel
   if (key === 'm' || key === 'M') {
     mode = (mode + 1) % 3;
   }
 
-  // Reset walkers
   if (key === 'r' || key === 'R') {
     resetWalkers();
   }
 
-  // Ajuste rápido de velocidad
   if (key === '+') stepsPerFrame = min(30, stepsPerFrame + 1);
   if (key === '-') stepsPerFrame = max(1, stepsPerFrame - 1);
 }
@@ -293,7 +280,6 @@ class Walker {
     this.px = this.x;
     this.py = this.y;
 
-    // Lévy
     this.minStep = 1;
     this.beta = 1.6;
     this.maxJump = 220;
@@ -301,11 +287,9 @@ class Walker {
     this.baseJumpProb = 0.02;
     this.baseTurnSpeed = 0.01;
 
-    // Perlin
     this.t = random(1000) + id * 100;
     this.angleSpan = TWO_PI * 2;
 
-    // Orgánico
     this.jitter = 0.12;
     this.brushBias = random(0.8, 1.25);
   }
@@ -319,7 +303,6 @@ class Walker {
     this.px = this.x;
     this.py = this.y;
 
-    // Mouse controla el sistema
     const mx = constrain(mouseX / width, 0, 1);
     const my = constrain(mouseY / height, 0, 1);
 
@@ -396,7 +379,41 @@ class Walker {
 }
 
 
+- Donde se aplican los conceptos
+- Las caminatas aleatorias, estas se ubican en el metodo step() del Walker, se aplica cada freme y hace 2 cosas, toma direccion y distancia de paso, en el codigo estan en las lineas 175 y 176,
+this.x += cos(angle) * stepLen;
+this.y += sin(angle) * stepLen;
+
+Mas detalladamente seria, en el metodo draw() este se ejecuta 60 veces por segundo, permitiendo la repeticion y el trazado constante, 
+step() {
+  this.px = this.x;
+  this.py = this.y;
+  ...
+  this.x += cos(angle) * stepLen;
+  this.y += sin(angle) * stepLen;
+este codigo es el que permite la caminata donde se guarda el estado anterior y se dibuja el segmento, despues se aplican las dos lineas de this.x.... que son las que dan la aleatoriedad del paso. Se uso el random walker existente en la pagina como base para toda la obra de arte generativa. 
+
+- El ruido Perlin se usa para suavizar la direccion del movimiento, segun la explicacion de la pagina permite que sistemas aleatorios tengan mas continuidad entonces tome el concepto para que al aplicarlo junto a la caminata aleatoria y el levy flight los saltos no se sientan como disonantes ante lo demas, dentro del codigo ocurre aca
+
+const n = noise(this.t);
+let angle = n * angleSpan;
+angle += random(-this.jitter, this.jitter);
+...
+this.t += turnSpeed * (jumped ? 2.2 : 1.0);
+
+lo importante ocurre aca, const n = noise(this.t); noise devuelve un valor entre 0 y 1, entonces si this.t cambia noise(this.t) cambia tambien y suaviza el proceso, osea basicamente que la direccion en la que gira el random walker no se sienta como giros bruscos sino de forma mas "natural". 
+
+- Levy flight, basicamente hace que aunque la caminata sea paso a paso hay momentos donde la longitud del paso es mucho mayor, en el codigo esta representado de la siguiente manera.
+levyStepLength() {
+  const u = max(1e-9, random());
+  return this.minStep * pow(u, -1 / (this.beta - 1));
+}
+ 
+
+
+
 
 ## Bitácora de reflexión
+
 
 
