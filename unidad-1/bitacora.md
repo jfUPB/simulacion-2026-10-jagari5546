@@ -146,11 +146,14 @@ class Walker {
 <img width="815" height="548" alt="image" src="https://github.com/user-attachments/assets/ea70b2e7-0b2a-418f-9fa5-2c1c3da83db4" />
 
 ## Bitácora de aplicación 
+
 - Usare El concepto de Levy Flight, Caminatas Aleatorias y Ruido Perlin.
-- https://editor.p5js.org/jagari5546/sketches/5GRRsp5yF Link
+  
+- [Link al código](https://editor.p5js.org/jagari5546/sketches/5GRRsp5yF)
+  
 - <img width="1844" height="886" alt="image" src="https://github.com/user-attachments/assets/703a5775-9c14-4792-8258-9020b5abc7ba" />
  
-
+```js
 let walkers = [];
 let palettesHex;
 let palettes;
@@ -379,37 +382,50 @@ class Walker {
     }
   }
 }
+```
 
 
 - Donde se aplican los conceptos
 - Las caminatas aleatorias, estas se ubican en el metodo step() del Walker, se aplica cada freme y hace 2 cosas, toma direccion y distancia de paso, en el codigo estan en las lineas 175 y 176,
+  
+```js
 this.x += cos(angle) * stepLen;
 this.y += sin(angle) * stepLen;
+```
 
 Mas detalladamente seria, en el metodo draw() este se ejecuta 60 veces por segundo, permitiendo la repeticion y el trazado constante, 
+
+```js
 step() {
   this.px = this.x;
   this.py = this.y;
   ...
   this.x += cos(angle) * stepLen;
   this.y += sin(angle) * stepLen;
+```
+
 este codigo es el que permite la caminata donde se guarda el estado anterior y se dibuja el segmento, despues se aplican las dos lineas de this.x.... que son las que dan la aleatoriedad del paso. Se uso el random walker existente en la pagina como base para toda la obra de arte generativa. 
 
 - El ruido Perlin se usa para suavizar la direccion del movimiento, segun la explicacion de la pagina permite que sistemas aleatorios tengan mas continuidad entonces tome el concepto para que al aplicarlo junto a la caminata aleatoria y el levy flight los saltos no se sientan como disonantes ante lo demas, dentro del codigo ocurre aca
 
+```js
 const n = noise(this.t);
 let angle = n * angleSpan;
 angle += random(-this.jitter, this.jitter);
 ...
 this.t += turnSpeed * (jumped ? 2.2 : 1.0);
+```
 
 lo importante ocurre aca, const n = noise(this.t); noise devuelve un valor entre 0 y 1, entonces si this.t cambia noise(this.t) cambia tambien y suaviza el proceso, osea basicamente que la direccion en la que gira el random walker no se sienta como giros bruscos sino de forma mas "natural". 
 
 - Levy flight, basicamente hace que aunque la caminata sea paso a paso hay momentos donde la longitud del paso es mucho mayor, en el codigo esta representado de la siguiente manera.
+
+```js
 levyStepLength() {
   const u = max(1e-9, random());
   return this.minStep * pow(u, -1 / (this.beta - 1));
 }
+```
  
 
 
@@ -420,6 +436,7 @@ levyStepLength() {
 2. Una caminata aleatoria es como su nombre lo dice un walker cuya siguiente direccion se escoje de forma aleatoria, aca cualquier direccion es posible y no hay una tendencia clara hacia ninguna de las direcciones mientras que una distribucion normal tiene una clara tendencia hacia algun lado, viendolo como los ejemplos de la pagina una distribucion normal tendria tendencia a que los numeros sean mas centrales digamos que si tuviera que escoger un numero entre 1 y 50 mayormente escogeria los numeros cerca al 25, de forma grafica se aprecia como una campana de bell o una campana de gauss ya esta tendra forma mas chata o mas "picuda" dependiendo de la desviacion estandar.
 3. La aleatoriedad en el arte generativo
 4. Use el random walker mezclado con el levy flight, no quiero hablar de uno solo sino en ambos como conjunto, la direccion la escoge el walker y asi da una sensacion de creacion en tiempo real mientras que los saltos dados por el levy flight permiten que 
+
 
 
 
