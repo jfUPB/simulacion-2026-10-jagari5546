@@ -147,7 +147,9 @@ class Walker {
 
 ## Bitácora de aplicación 
 - Usare El concepto de Levy Flight, Caminatas Aleatorias y Ruido Perlin.
-- 
+- https://editor.p5js.org/jagari5546/sketches/5GRRsp5yF Link
+- <img width="1844" height="886" alt="image" src="https://github.com/user-attachments/assets/703a5775-9c14-4792-8258-9020b5abc7ba" />
+ 
 
 let walkers = [];
 let palettesHex;
@@ -414,6 +416,11 @@ levyStepLength() {
 
 
 ## Bitácora de reflexión
+1. La aleatoriedad del random
+2. Una caminata aleatoria es como su nombre lo dice un walker cuya siguiente direccion se escoje de forma aleatoria, aca cualquier direccion es posible y no hay una tendencia clara hacia ninguna de las direcciones mientras que una distribucion normal tiene una clara tendencia hacia algun lado, viendolo como los ejemplos de la pagina una distribucion normal tendria tendencia a que los numeros sean mas centrales digamos que si tuviera que escoger un numero entre 1 y 50 mayormente escogeria los numeros cerca al 25, de forma grafica se aprecia como una campana de bell o una campana de gauss ya esta tendra forma mas chata o mas "picuda" dependiendo de la desviacion estandar.
+3. La aleatoriedad en el arte generativo
+4. Use el random walker mezclado con el levy flight, no quiero hablar de uno solo sino en ambos como conjunto, la direccion la escoge el walker y asi da una sensacion de creacion en tiempo real mientras que los saltos dados por el levy flight permiten que 
+
 
 
 
