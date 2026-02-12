@@ -17,7 +17,87 @@
 
 
 ## Bitácora de aplicación 
+- Mi obra de arte representa una lluvia de estrellas, lo unico que se modifica y se interactua es con el limite al que caen las mismas siendo mouse izq menos velocidad y mouse der mas velocidad, me gusta la idea de un cielo nocturno mientras ves las estrellas pasar como por ejemplo en los documentales cuando aceleran la velocidad de reproduccion de una camara estacionaria, el concepto inicial era una lluvia normal pero el resultado me llevo a una lluvia de estrellas.
+- Codigo de la aplicacion
+mover.js
+```js
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
 
+class Mover {
+  constructor() {
+    this.position = createVector(random(width), height - 2);
+    this.velocity = createVector();
+    this.acceleration = createVector(-0.001, 0.01);
+    this.topSpeed = 10;
+  }
+
+  update() {
+    
+    this.topSpeed = map(constrain(mouseX, 0, width), 0, width, 1, 20)
+    
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(this.topSpeed);
+    this.position.add(this.velocity);
+  }
+
+  show() {
+    stroke(0);
+    strokeWeight(1);
+    fill(255);
+    rect(this.position.x, this.position.y, 2, 8);
+  }
+
+  checkEdges() {
+    if (this.position.x > width) {
+      this.position.x = 0;
+    } else if (this.position.x < 0) {
+      this.position.x = width;
+    }
+
+    if (this.position.y > height) {
+      this.position.y = 0;
+    } else if (this.position.y < 0) {
+      this.position.y = height;
+    }
+  }
+}
+
+```
+scketh.js
+```js
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+let movers=[];
+let numMovers=300;
+
+function setup() {
+  createCanvas(500, 500);
+  for(let i = 0; i < numMovers; i++){
+    movers.push(new Mover());
+    
+    movers[i].position.y = random(height);
+  }
+  background(0)
+}
+
+function draw() {
+  background(0, 40);
+for (let m of movers){
+  
+  m.show();
+  m.update();
+  m.checkEdges();
+}
+}
+```
+- [Link al Codigo](https://editor.p5js.org/jagari5546/sketches/DztPkbhBr)
+  
+- Imagen Representativa <img width="652" height="635" alt="image" src="https://github.com/user-attachments/assets/a46240c8-06e9-4cd5-9319-a0a3cc0bbbd5" />
 
 
 ## Bitácora de reflexión
+
