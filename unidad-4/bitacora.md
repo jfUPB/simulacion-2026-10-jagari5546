@@ -9,7 +9,7 @@
 
 - Sketch.js
 
-´´´js
+```js
 const STEP = 6;
 const RIVER_WEIGHT = 10;
 
@@ -154,11 +154,31 @@ function deformContour(baseY, riverY) {
 
   return baseY + offset;
 }
-´´´
+```
+- colors.js
+```js
+const COLORS = {
+  background: "#000000",
+  river: "#1d4ed8",
+  shallow: "#22c55e", 
+  deep: "#ef4444"     
+};
+```
+<img width="857" height="730" alt="image" src="https://github.com/user-attachments/assets/3da451f5-eb10-4b41-80f5-6da96d1af0c8" />
+
+- Link
+
+
+- Conclusiones
+  1. No resulto como esperaba aun asi estoy satisfecho
+  2. Pudo haber resultado mejor
+  3. El marco motion101 no era la mejor combinacion con la idea planteada originalmente
+
 
 
 
 ## Bitácora de reflexión
+
 
 
 
