@@ -166,7 +166,7 @@ const COLORS = {
 ```
 <img width="857" height="730" alt="image" src="https://github.com/user-attachments/assets/3da451f5-eb10-4b41-80f5-6da96d1af0c8" />
 
-- Link
+- [Link al Codigo](https://editor.p5js.org/jagari5546/sketches/c1VrT15uo)
 
 
 - Conclusiones
@@ -178,6 +178,7 @@ const COLORS = {
 
 
 ## Bitácora de reflexión
+
 
 
 
