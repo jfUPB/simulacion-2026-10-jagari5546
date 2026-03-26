@@ -545,5 +545,11 @@ class MemoryCore {
   }
 }
 ```
+<img width="751" height="601" alt="image" src="https://github.com/user-attachments/assets/6d83c025-747e-41b2-9768-d845da06e86a" />
+<img width="650" height="458" alt="image" src="https://github.com/user-attachments/assets/0806c929-1290-435c-8e38-e0d92d6f9bfb" />
+<img width="664" height="478" alt="image" src="https://github.com/user-attachments/assets/fbbd29b4-a3ae-418c-beb9-854ef54de96d" />
+
+
+
 
 ## Bitácora de reflexión
