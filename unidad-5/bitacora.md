@@ -553,3 +553,24 @@ class MemoryCore {
 
 
 ## Bitácora de reflexión
+Describe con tus propias palabras cada uno de estos 10 principios:
+
+Una partícula es una entidad con estado.
+- 
+
+Una partícula tiene ciclo de vida.
+- Una particula puede como puede no tener un ciclo de vida, por temas de optimización y manejo de memoria si tiene un ciclo de vida definido en donde la particula muere despues de x/y parametro, sea distancia recorrida, tiempo, o la colision con algun objeto.
+
+Un sistema de partículas gestiona colecciones dinámicas de elementos.
+-
+
+La creación y eliminación de partículas no es un detalle técnico menor, sino parte central del modelo.
+Debe haber separación entre la lógica de una partícula individual y la lógica del sistema/emisor.
+Un emisor o particle system es una abstracción importante.
+Pueden existir sistemas de sistemas.
+Puede haber heterogeneidad usando herencia y polimorfismo.
+Las partículas pueden responder a fuerzas globales y locales.
+La representación visual puede variar sin cambiar el principio algorítmico de fondo.
+Parte 2 — Transferencia a otra herramienta
+
+Piensa en tu pieza del Apply: si la quisieras recrear en Unity (o TouchDesigner, o Blender), ¿Qué se mantendría igual y qué cambiaría? ¿Qué partes de tu diseño son independientes de la herramienta?
